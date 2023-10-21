@@ -11,38 +11,83 @@ namespace Praktika04
         class Vehicle
         {
             public string Name { get; set; }
-            // Другие свойства для автомобиля.
-
             public bool IsInRepair { get; set; }
-            // Другие свойства для статуса автомобиля.
+
+            public Vehicle(string name)
+            {
+                Name = name;
+                IsInRepair = false;
+            }
+
+
+            public void SetInRepair(bool isInRepair)
+            {
+                IsInRepair = isInRepair;
+            }
+
         }
 
         class Driver
         {
             public string Name { get; set; }
-            // Другие свойства для водителя.
 
-            public void RequestRepair()
+            public Driver(string name)
             {
-                // Запрос на ремонт.
+                Name = name;
             }
+
+
+            public void RequestRepair(Vehicle vehicle)
+            {
+                if (vehicle != null)
+                {
+                    vehicle.SetInRepair(true);
+                    Console.WriteLine($"{Name} запросил ремонт для {vehicle.Name}");
+                }
+                else
+                {
+                    Console.WriteLine($"{Name} не может запросить ремонт, так как у него нет автомобиля.");
+                }
+            }
+
         }
 
         class Dispatcher
         {
             public void AssignDriverAndVehicle(Driver driver, Vehicle vehicle)
             {
-                // Назначение водителя и автомобиля на рейс.
+                if (driver != null && vehicle != null)
+                {
+                    Console.WriteLine($"Назначение {driver.Name} на {vehicle.Name}");
+                }
+                else
+                {
+                    Console.WriteLine("Невозможно назначить водителя и автомобиль.");
+                }
             }
 
             public void SuspendDriver(Driver driver)
             {
-                // Отстранение водителя от работы.
+                if (driver != null)
+                {
+                    Console.WriteLine($"{driver.Name} был отстранен от работы.");
+                }
+                else
+                {
+                    Console.WriteLine("Невозможно отстранить водителя, так как он не указан.");
+                }
             }
 
             public void RecordTripCompletion(Driver driver, Vehicle vehicle)
             {
-                // Запись о выполнении рейса.
+                if (driver != null && vehicle != null)
+                {
+                    Console.WriteLine($"{driver.Name} выполнил рейс на {vehicle.Name}");
+                }
+                else
+                {
+                    Console.WriteLine("Невозможно записать выполнение рейса, так как водитель или автомобиль не указаны.");
+                }
             }
         }
 
@@ -50,35 +95,27 @@ namespace Praktika04
         {
             static void Main()
             {
-                // Создаем экземпляры водителей и автомобилей
-                Driver driver1 = new Driver { Name = "Водитель 1" };
-                Driver driver2 = new Driver { Name = "Водитель 2" };
-                Vehicle vehicle1 = new Vehicle { Name = "Автомобиль 1", IsInRepair = false };
-                Vehicle vehicle2 = new Vehicle { Name = "Автомобиль 2", IsInRepair = true };
+                Driver driver1 = new Driver("Водитель 1");
+                Driver driver2 = new Driver("Водитель 2");
+                Vehicle vehicle1 = new Vehicle("Автомобиль 1");
+                Vehicle vehicle2 = new Vehicle("Автомобиль 2");
 
-                // Создаем экземпляр диспетчера
                 Dispatcher dispatcher = new Dispatcher();
 
-                // Назначаем водителей и автомобили на рейсы
                 dispatcher.AssignDriverAndVehicle(driver1, vehicle1);
                 dispatcher.AssignDriverAndVehicle(driver2, vehicle2);
 
-                // Запрашиваем ремонт для автомобиля
-                driver2.RequestRepair();
+                driver2.RequestRepair(vehicle2);
 
-                // Завершаем рейс и записываем выполнение
                 dispatcher.RecordTripCompletion(driver1, vehicle1);
 
-                // Отстраняем водителя от работы
                 dispatcher.SuspendDriver(driver2);
 
-                // Выводим информацию о состоянии водителей и автомобилей
                 Console.WriteLine("Состояние водителей и автомобилей:");
                 Console.WriteLine($"{driver1.Name} - Работает");
                 Console.WriteLine($"{driver2.Name} - Отстранен");
                 Console.WriteLine($"{vehicle1.Name} - {(vehicle1.IsInRepair ? "На ремонте" : "Готов")}");
                 Console.WriteLine($"{vehicle2.Name} - {(vehicle2.IsInRepair ? "На ремонте" : "Готов")}");
-
             }
         }
     }

@@ -50,7 +50,6 @@ namespace Praktika04
                 library.AddBook(new Book { Title = "Book 3", Author = "Author 1", Year = 2010 });
                 library.AddBook(new Book { Title = "Book 4", Author = "Author 3", Year = 2022 });
 
-                // Выполняем операции поиска и сортировки
                 Console.WriteLine("Все книги в библиотеке:");
                 foreach (var book in library.SortByTitle())
                 {
@@ -63,7 +62,6 @@ namespace Praktika04
                     Console.WriteLine($"Название: {book.Title}, Автор: {book.Author}, Год: {book.Year}");
                 }
 
-                // Удаляем книгу по названию
                 library.RemoveBook("Book 2");
 
                 Console.WriteLine("\nПосле удаления книги 'Book 2':");

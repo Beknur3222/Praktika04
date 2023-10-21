@@ -11,11 +11,9 @@ namespace Praktika04
         class Passenger
         {
             public string Name { get; set; }
-            // Другие свойства для пассажира.
 
             public Ticket RequestTicket(string destination, DateTime dateTime)
             {
-                // Создание запроса на билет.
                 return new Ticket();
             }
         }
@@ -30,15 +28,30 @@ namespace Praktika04
 
         class Cashier
         {
+            private Dictionary<string, decimal> ticketPrices = new Dictionary<string, decimal>();
+
             public void SetPrices(Dictionary<string, decimal> prices)
             {
-                // Установка цен на билеты.
+                ticketPrices = prices;
             }
 
             public Ticket IssueTicket(string trainNumber, string destination, DateTime dateTime)
             {
-                // Выдача билета пассажиру.
-                return new Ticket();
+                if (ticketPrices.TryGetValue(trainNumber, out decimal price))
+                {
+                    var ticket = new Ticket
+                    {
+                        TrainNumber = trainNumber,
+                        Destination = destination,
+                        DepartureTime = dateTime,
+                        Price = price
+                    };
+                    return ticket;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Билет на данный поезд не доступен.");
+                }
             }
         }
 
@@ -46,31 +59,25 @@ namespace Praktika04
         {
             static void Main()
             {
-                // Создаем экземпляр кассира
                 Cashier cashier = new Cashier();
 
-                // Устанавливаем цены на билеты
                 Dictionary<string, decimal> ticketPrices = new Dictionary<string, decimal>
-        {
-            { "Train123", 50.00M },
-            { "Train456", 70.00M },
-            { "Train789", 90.00M }
-        };
+                {
+                    { "Train123", 50.00M },
+                    { "Train456", 70.00M },
+                    { "Train789", 90.00M }
+                };
                 cashier.SetPrices(ticketPrices);
 
-                // Создаем экземпляр пассажира
                 Passenger passenger = new Passenger { Name = "Пассажир 1" };
 
-                // Пассажир запрашивает билет
                 string requestedTrainNumber = "Train123";
                 string destination = "Назначение 1";
                 DateTime departureTime = DateTime.Now.AddHours(2);
                 Ticket requestedTicket = passenger.RequestTicket(destination, departureTime);
 
-                // Кассир выдает билет
                 Ticket issuedTicket = cashier.IssueTicket(requestedTrainNumber, destination, departureTime);
 
-                // Выводим информацию о билетах
                 Console.WriteLine("Запрошенный билет:");
                 Console.WriteLine($"Поезд: {requestedTicket.TrainNumber}, Назначение: {requestedTicket.Destination}, Время отправления: {requestedTicket.DepartureTime}, Цена: {requestedTicket.Price}");
 

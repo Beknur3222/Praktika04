@@ -11,28 +11,52 @@ namespace Praktika04
         class Client
         {
             public string Name { get; set; }
-            // Другие свойства для клиента.
-
             public BankAccount BankAccount { get; set; }
             public CreditCard CreditCard { get; set; }
 
             public void MakePayment(decimal amount)
             {
-                // Оплата счета.
+                if (BankAccount != null && BankAccount.Balance >= amount)
+                {
+                    BankAccount.Balance -= amount;
+                    Console.WriteLine($"{Name} совершил платеж в размере {amount}.");
+                }
+                else
+                {
+                    Console.WriteLine($"{Name} не может совершить платеж. Недостаточно средств.");
+                }
             }
 
             public void TransferMoney(BankAccount targetAccount, decimal amount)
             {
-                // Перевод денег на другой счет.
+                if (BankAccount != null && BankAccount.Balance >= amount && targetAccount != null)
+                {
+                    BankAccount.Balance -= amount;
+                    targetAccount.Balance += amount;
+                    Console.WriteLine($"{Name} перевел {amount} на счет {targetAccount.AccountNumber}.");
+                }
+                else
+                {
+                    Console.WriteLine($"{Name} не может совершить перевод. Недостаточно средств или целевой счет не указан.");
+                }
+            }
+
+            public void CancelPayment(decimal amount)
+            {
+                if (BankAccount != null)
+                {
+                    BankAccount.Balance += amount;
+                    Console.WriteLine($"{Name} аннулировал платеж в размере {amount}.");
+                }
             }
 
             public void BlockCreditCard()
             {
-                // Блокировка кредитной карты.
-            }
-            public void CancelPayment(decimal amount)
-            {
-                // Аннулирование счета.
+                if (CreditCard != null)
+                {
+                    CreditCard.IsBlocked = true;
+                    Console.WriteLine($"Кредитная карта клиента {Name} была заблокирована.");
+                }
             }
         }
 
@@ -40,7 +64,6 @@ namespace Praktika04
         {
             public string AccountNumber { get; set; }
             public decimal Balance { get; set; }
-            // Другие свойства и методы для банковского счета.
         }
 
         class CreditCard
@@ -48,23 +71,24 @@ namespace Praktika04
             public string CardNumber { get; set; }
             public decimal CreditLimit { get; set; }
             public bool IsBlocked { get; set; }
-            // Другие свойства и методы для кредитной карты.
         }
 
         class Administrator
         {
             public void BlockCreditCard(CreditCard creditCard)
             {
-                creditCard.IsBlocked = true;
+                if (creditCard != null)
+                {
+                    creditCard.IsBlocked = true;
+                    Console.WriteLine("Кредитная карта заблокирована администратором.");
+                }
             }
-            // Другие методы администратора.
         }
 
         class Program
         {
             static void Main()
             {
-                // Создаем клиента, банковский счет и кредитную карту
                 Client client1 = new Client { Name = "Клиент 1" };
                 BankAccount bankAccount1 = new BankAccount { AccountNumber = "123456", Balance = 1000.00M };
                 CreditCard creditCard1 = new CreditCard { CardNumber = "1111-2222-3333-4444", CreditLimit = 5000.00M, IsBlocked = false };
@@ -72,25 +96,18 @@ namespace Praktika04
                 client1.BankAccount = bankAccount1;
                 client1.CreditCard = creditCard1;
 
-                // Клиент проводит платеж и переводит деньги на другой счет
                 client1.MakePayment(200.00M);
                 client1.TransferMoney(bankAccount1, 300.00M);
 
-                // Создаем администратора
                 Administrator administrator = new Administrator();
-
-                // Администратор блокирует кредитную карту
                 administrator.BlockCreditCard(creditCard1);
 
-                // Клиент аннулирует счет
                 client1.CancelPayment(50.00M);
 
-                // Выводим информацию о клиенте, банковском счете и кредитной карте
                 Console.WriteLine($"Имя клиента: {client1.Name}");
                 Console.WriteLine($"Баланс банковского счета: {bankAccount1.Balance}");
                 Console.WriteLine($"Лимит кредитной карты: {creditCard1.CreditLimit}");
                 Console.WriteLine($"Кредитная карта заблокирована: {creditCard1.IsBlocked}");
-
             }
         }
     }
